@@ -22,15 +22,6 @@ app.use(express.urlencoded({ extended: true }))
 
 const __dirname = path.resolve();
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
-app.use((err, req, res, next) => {
-    res.status(500).send({ message: err.message })
-})
-
-// ROUTES //
-
-// users router
-app.use('/api/users', userRouter)
-
 
 if (process.env.NODE_ENV === 'production') {
     // Set static folder
@@ -43,6 +34,13 @@ if (process.env.NODE_ENV === 'production') {
 app.use((err, req, res, next) => {
     res.status(500).send({ message: err.message })
 })
+
+// ROUTES //
+
+// users router
+app.use('/api/users', userRouter)
+
+
 
 //products router
 app.use('/api/products', productRouter)
