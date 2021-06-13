@@ -32,7 +32,7 @@ app.use((err, req, res, next) => {
 app.use('/api/users', userRouter)
 
 
-// app.use(express.static('frontend/build'));
+app.use(express.static('frontend/build'));
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/build', 'index.html'));
