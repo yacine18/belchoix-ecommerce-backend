@@ -31,14 +31,14 @@ app.use((err, req, res, next) => {
 // users router
 app.use('/api/users', userRouter)
 
-if(process.env.NODE.ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'front_end', 'build')));
-  
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, 'front_end', 'build', 'index.html'))
-    });
-  
-  }
+app.use(express.static(path.join(__dirname, 'front_end', 'build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'front_end', 'build', 'index.html'))
+});
+app.use((err, req, res, next) => {
+    res.status(500).send({ message: err.message })
+})
 
 //products router
 app.use('/api/products', productRouter)
