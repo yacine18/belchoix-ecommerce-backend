@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "Mern Stack eCommerce ",
+  "engines": {
+    "node": "14.17.0"
+  },
   "main": "server.js",
   "scripts": {
     "start": "nodemon --watch backend --exec node --experimental-modules backend/server.js"
