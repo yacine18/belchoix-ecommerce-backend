@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
 import AlertError from '../components/AlertError';
-import { addToCart } from '../actions/cartActions'
+import { addToCart, removeFromCart } from '../actions/cartActions'
 
 const CartScreen = props => {
 
@@ -21,6 +21,10 @@ const CartScreen = props => {
             dispatch(addToCart(productId, qty))
         }
     }, [dispatch, productId, qty])
+
+    const removeFromCartHandler = id => {
+        dispatch(removeFromCart(id))
+    }
     return (
         <div className="d-flex flex-row" style={{ width: '100%' }}>
             {error && (<AlertError>{error}</AlertError>)}
@@ -39,7 +43,7 @@ const CartScreen = props => {
                                     <div style={{ marginTop: '0.8rem', marginLeft: '2.2rem' }}>
                                         <select
                                             value={item.qty}
-                                            className="p-2" 
+                                            className="p-2"
                                             onChange={(e) =>
                                                 dispatch(
                                                     addToCart(item.product, Number(e.target.value))
@@ -57,9 +61,9 @@ const CartScreen = props => {
                                         <p>${item.price}</p>
                                     </div>
                                     <div style={{ marginTop: '0.8rem', marginLeft: '4.7rem', }}>
-                                        <button type="button" className="btn btn-danger">
+                                        <button type="button" onClick={() => removeFromCartHandler(item.product)} className="btn btn-danger">
                                             Delete
-                                       </button>
+                                        </button>
                                     </div>
                                 </>
                             ))
