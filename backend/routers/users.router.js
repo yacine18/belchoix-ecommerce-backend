@@ -86,4 +86,13 @@ userRouter.post('/login', expressAsyncHandler(async (req, res) => {
 
 }));
 
+userRouter.get('/:id', expressAsyncHandler(async (req,res) => {
+    const user = await User.findById(req.params.id);
+    if(user) {
+        res.send(user)
+    } else {
+        return res.status(401).send({ message: 'User not Found!' });
+    }
+}))
+
 export default userRouter;
