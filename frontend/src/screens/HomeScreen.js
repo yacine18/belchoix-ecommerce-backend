@@ -9,7 +9,6 @@ const HomeScreen = () => {
 
     const productList = useSelector(state => state.productList)
     const { error, loading, products } = productList
-    console.log(products)
 
     const dispatch = useDispatch()
 
@@ -18,20 +17,17 @@ const HomeScreen = () => {
     }, [dispatch])
     return (
         <div className="container mt-5">
-            {loading ? <LoadingBox></LoadingBox>
+            {loading ? (<LoadingBox></LoadingBox>)
                 :
-                error ? <MessageBox>{error}</MessageBox>
+                error ? (<MessageBox>{error}</MessageBox>)
                     :
             
-                    <div class="row mt-3 ml-5 mr-5 my-auto px-2">
+                  (  <div className="row mt-3 ml-5 mr-5 my-auto px-2">
                         {products.map(product => (
                             <Product key={product._id} product={product} />
                         ))}
-                    </div>
+                    </div>)
             }
-            
-
-
 
         </div >
     )
