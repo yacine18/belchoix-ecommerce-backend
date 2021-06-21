@@ -2,7 +2,7 @@ import express from 'express';
 import expressAsyncHandler from 'express-async-handler';
 import User from '../models/User.model.js'
 import bcrypt from 'bcrypt'
-import { generateToken } from '../utils.js';
+import { generateToken, isAuth } from '../utils.js';
 
 const userRouter = express.Router();
 
@@ -37,6 +37,7 @@ userRouter.post('/register', expressAsyncHandler(async (req, res) => {
             name: createdUser.name,
             mobile: createdUser.mobile,
             email: createdUser.email,
+            mobile: createdUser.mobile,
             token: generateToken(createdUser),
         })
     } catch (error) {
@@ -68,6 +69,7 @@ userRouter.post('/login', expressAsyncHandler(async (req, res) => {
                 name: user.name,
                 email: user.email,
                 isAdmin: user.isAdmin,
+                mobile: user.mobile,
                 token: generateToken(user),
             });
         } else {
@@ -81,7 +83,8 @@ userRouter.post('/login', expressAsyncHandler(async (req, res) => {
 
 }));
 
-userRouter.get('/:id', expressAsyncHandler(async (req, res) => {
+// get user data
+userRouter.get('/:id', isAuth, expressAsyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user) {
         res.send(user)

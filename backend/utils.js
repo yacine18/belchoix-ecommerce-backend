@@ -1,7 +1,7 @@
-import jwt from 'jsonwebtoken';
+import jwt, { decode } from 'jsonwebtoken';
 
 export const generateToken = user => {
-    const jwtSecret = process.env.JWT_SECRET || 'amazona';
+    const jwtSecret = process.env.JWT_SECRET || 'belchoix';
     return jwt.sign({
         _id: user._id,
         name: user.name,
@@ -11,4 +11,26 @@ export const generateToken = user => {
     }, jwtSecret, {
         expiresIn: '30d',
     })
+}
+
+export const isAuth = (req, res, next) => {
+    const authorization = req.headers.authorization
+    if (authorization) {
+        const token = authorization.slice(7, authorization.length)
+        const jwtSecret = process.env.JWT_SECRET || 'belchoix';
+        jwt.verify(
+            token,
+            jwtSecret,
+            (err, decode) => {
+                if(err) {
+                    res.status(401).send({message: 'Invalid Token'})
+                } else {
+                    req.user = decode
+                    next()
+                }
+            }
+        )
+    } else {
+        res.status(401).send({message: 'No Token'})
+    }
 }

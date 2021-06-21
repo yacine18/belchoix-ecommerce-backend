@@ -2,9 +2,11 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, BrowserRouter, Route } from 'react-router-dom'
 import { signout } from './actions/userAction'
+import PrivateRoute from './components/PrivateRoute'
 import CartScreen from './screens/CartScreen'
 import HomeScreen from './screens/HomeScreen'
 import ProductScreen from './screens/ProductScreen'
+import ProfileScreen from './screens/ProfileScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import SigninScreen from './SigninScreen'
 
@@ -12,6 +14,9 @@ const App = () => {
 
   const userSignin = useSelector(state => state.userSignin)
   const { userInfo } = userSignin
+
+  const cart = useSelector(state => state.cart)
+  const {cartItems} = cart
 
   const dispatch = useDispatch()
 
@@ -30,9 +35,14 @@ const App = () => {
                 </Link>
               </div>
               <div className="row">
-                <Link to="/cart" className="mr-2">
+                <Link to="/cart" className="mr-5">
                   <img src="../icons/shopping-cart.png" width="22" height="22" alt="cart" />
-                  <span className="badge text-decoration-none text-warning" style={{ fontSize: '1.6rem' }}>1</span>
+                  {
+                    cartItems.length > 0  && 
+                      <span className="badge text-decoration-none text-warning" style={{ fontSize: '1.6rem' }}>{cartItems.length}</span>
+                    
+                  }
+                  
                 </Link>
                 {
                   userInfo ? (
@@ -52,7 +62,7 @@ const App = () => {
                         <Link to="/profile" className="dropdown-item" style={{ fontSize: '1.7rem' }}>Profile</Link>
 
                         <Link className="dropdown-item" to="orders" style={{ fontSize: '1.7rem' }}>Orders</Link>
-                        <Link className="dropdown-item" onClick={signoutHandler} to="#" style={{ fontSize: '1.7rem' }}>Singout</Link>
+                        <Link className="dropdown-item" onClick={signoutHandler} to="#" style={{ fontSize: '1.7rem' }}>Sign out</Link>
                       </div>
                     </div>
                   ) : (
@@ -71,7 +81,8 @@ const App = () => {
           <Route path="/signin" component={SigninScreen} />
           <Route path="/register" component={RegisterScreen} />
           <Route path="/product/:id" component={ProductScreen} />
-          <Route path="/cart" component={CartScreen} />
+          <Route path="/cart/:id?" component={CartScreen} />
+          <PrivateRoute path="/profile" component={ProfileScreen} />
         </main>
         <footer className="text-center">
           <div className="text-center p-4">
