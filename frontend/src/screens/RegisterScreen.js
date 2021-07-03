@@ -12,14 +12,18 @@ const RegisterScreen = props => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    const redirect = props.location.search
+    ? props.location.search.split('=')[1]
+    : '/';
+
     const userRegister = useSelector(state => state.userRegister)
     const { userInfo, error, loading } = userRegister
 
     useEffect(() => {
         if (userInfo) {
-            props.history.push('/')
+            props.history.push(redirect)
         }
-    }, [userInfo, props])
+    }, [userInfo, props, redirect])
 
     const dispatch = useDispatch()
 
@@ -89,7 +93,7 @@ const RegisterScreen = props => {
                 </div>
                 <button type="submit" className="btn btn-warning btn-block" style={{ fontSize: '1.8rem' }}>Submit</button>
             </form>
-            <p className="mt-5 p-5 text-center">Already Customer? <Link to="/signin">Sign In</Link></p>
+            <p className="mt-5 p-5 text-center">Already Customer? <Link to={`/signin?redirect=${redirect}`}>Sign In</Link></p>
         </div>
     )
 }

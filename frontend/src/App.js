@@ -4,10 +4,13 @@ import { Link, BrowserRouter, Route } from 'react-router-dom'
 import { signout } from './actions/userAction'
 import PrivateRoute from './components/PrivateRoute'
 import CartScreen from './screens/CartScreen'
+import EditProfileScreen from './screens/EditProfileScreen'
 import HomeScreen from './screens/HomeScreen'
+import PaymentMethodScreen from './screens/PaymentMethodScreen'
 import ProductScreen from './screens/ProductScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import RegisterScreen from './screens/RegisterScreen'
+import ShippingAddressScreen from './screens/ShippingAddressScreen'
 import SigninScreen from './SigninScreen'
 
 const App = () => {
@@ -82,7 +85,10 @@ const App = () => {
           <Route path="/register" component={RegisterScreen} />
           <Route path="/product/:id" component={ProductScreen} />
           <Route path="/cart/:id?" component={CartScreen} />
-          <PrivateRoute path="/profile" component={ProfileScreen} />
+          <Route path="/shipping" component={ShippingAddressScreen} />
+          <Route path="/payment" component={PaymentMethodScreen} />
+          <PrivateRoute path="/profile" component={ProfileScreen} exact/>
+          <PrivateRoute path="/profile/:id/edit" component={EditProfileScreen} />
         </main>
         <footer className="text-center">
           <div className="text-center p-4">

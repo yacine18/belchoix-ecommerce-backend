@@ -7,12 +7,12 @@ import { generateToken, isAuth } from '../utils.js';
 const userRouter = express.Router();
 
 //get all users
-userRouter.get('/', expressAsyncHandler(async (req, res) => {
+userRouter.get('/', async (req, res) => {
     const users = await User.find()
     res.send(users)
-}))
+})
 // signup new user
-userRouter.post('/register', expressAsyncHandler(async (req, res) => {
+userRouter.post('/register', async (req, res) => {
     try {
         const user = await User.findOne({ email: req.body.email })
         if (!req.body.name || !req.body.mobile || !req.body.email || !req.body.password) {
@@ -45,10 +45,10 @@ userRouter.post('/register', expressAsyncHandler(async (req, res) => {
     }
 
 
-}));
+});
 
 //signin user
-userRouter.post('/login', expressAsyncHandler(async (req, res) => {
+userRouter.post('/login', async (req, res) => {
     try {
 
         const { email, password } = req.body;
@@ -81,16 +81,37 @@ userRouter.post('/login', expressAsyncHandler(async (req, res) => {
     }
 
 
-}));
+});
 
 // get user data
-userRouter.get('/:id', isAuth, expressAsyncHandler(async (req, res) => {
+userRouter.get('/:id', isAuth, async (req, res) => {
     const user = await User.findById(req.params.id);
     if (user) {
         res.send(user)
     } else {
         return res.status(401).send({ message: 'User not Found!' });
     }
-}))
+})
+
+userRouter.put('/profile', async (req, res) => {
+    const user = await User.findById(req.user._id)
+    if (user) {
+       user.name || req.body.name
+       user.mobile || req.body.mobile
+       user.email || req.body.email
+       if(req.body.password){
+           user.password = bcrypt.hashSync(req.body.password, 8)
+       }
+
+       const updatedUser = await user.save()
+       res.send({
+           _id: updatedUser._id,
+           name: updatedUser.name,
+           mobile: updatedUser.mobile,
+           email: updatedUser.email,
+           token: generateToken(updatedUser)
+       })
+    }
+})
 
 export default userRouter;

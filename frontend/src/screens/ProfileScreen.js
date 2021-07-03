@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { detailsUser } from '../actions/userAction'
 import LoadingBox from '../components/LoadingBox'
 import MessageBox from '../components/MessageBox'
+import { Link } from 'react-router-dom'
+import { USER_DETAILS_RESET } from '../constants/userConstants'
 
 const ProfileScreen = () => {
 
@@ -15,10 +17,11 @@ const ProfileScreen = () => {
     const dispatch = useDispatch()
 
     useEffect(() => {
-        if(!user){
-           dispatch(detailsUser(userInfo._id)) 
+        if (!user) {
+            dispatch({type: USER_DETAILS_RESET})
+            dispatch(detailsUser(userInfo._id))
         }
-        
+
     }, [dispatch, userInfo, user])
     return (
         <div className="container mt-5">
@@ -32,7 +35,9 @@ const ProfileScreen = () => {
                                 <div className="col-md-3 mt-5 m-5 mx-auto">
                                     <div className="row-md-6">
                                         <h1>Account Details</h1>
-                                        <button type="button" className="btn btn-block btn-warning" style={{ fontSize: '1.7rem' }}>Edit</button>
+                                        <Link to={`/profile/${user._id}/edit`} style={{textDecoration:'none'}}>
+                                            <button type="button" className="btn btn-block btn-warning" style={{ fontSize: '1.7rem' }}>Edit</button>
+                                        </Link>
                                     </div>
 
                                     <div className="mt-5 m-5 mx-auto p-2">

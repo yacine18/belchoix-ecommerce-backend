@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToCart } from '../actions/cartActions'
+import { addToCart, removeFromCart } from '../actions/cartActions'
 import { Link } from 'react-router-dom'
 import MessageBox from '../components/MessageBox'
 
 const CartScreen = props => {
     const productId = props.match.params.id
+    const qty = props.location.search
+    ? Number(props.location.search.split('=')[1])
+    : 1;
 
-    const [qty, setQty] = useState(1)
     const cart = useSelector(state => state.cart)
     const { cartItems } = cart
 
@@ -18,6 +20,14 @@ const CartScreen = props => {
         }
 
     }, [dispatch, qty, productId])
+
+    const removeFromCartHandler = id => {
+        dispatch(removeFromCart(id))
+    }
+
+    const checkoutHandler = () => {
+        props.history.push('/signin?redirect=shipping')
+    }
     return (
         <div className="container mt-5">
             {
@@ -41,22 +51,23 @@ const CartScreen = props => {
                                         </Link>
                                         <select
                                             value={item.qty}
-                                            onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}
-                                            className="mb-4 p-3 my-4"
-                                            style={{ borderRadius: '0.5rem', boxShadow: 'none' }}
-                                        >
-                                            {[...Array(item.countInStock).keys()].map(
-                                                (x) => (
-                                                    <option key={x + 1} value={x + 1}>
-                                                        {x + 1}
-                                                    </option>
+                                            onChange={(e) =>
+                                                dispatch(
+                                                    addToCart(item.product, Number(e.target.value))
                                                 )
-                                            )}
+                                            }
+                                        >
+                                            {[...Array(item.countInStock).keys()].map((x) => (
+                                                <option key={x + 1} value={x + 1}>
+                                                    {x + 1}
+                                                </option>
+                                            ))}
                                         </select>
                                         <h2>${item.price}</h2>
                                         <button
                                             type="button"
-                                            className="btn btn-danger my-4 py-1"
+                                            className="btn btn-sm btn-danger my-4 py-1"
+                                            onClick={() => removeFromCartHandler(item.product)}
                                             style={{ fontSize: '1.5rem', borderRadius: '0.5rem' }}
                                         >
                                             Delete
@@ -70,7 +81,7 @@ const CartScreen = props => {
                         <div className=" col-md-4 mt-5">
                             <div className="mt-5 py-2">
                                 <strong style={{ fontSize: '1.8rem' }}>
-                                    Subtotal ({cartItems.reduce((a, c) => a + c.qty, 0)} items) :
+                                    Subtotal ({cartItems.length} items) :
                                     ${cartItems.reduce((a, c) => a + c.price * c.qty, 0)}
                                 </strong>
                             </div>
@@ -78,6 +89,7 @@ const CartScreen = props => {
                                 <button
                                     type="button"
                                     className="btn btn-block btn-warning"
+                                    onClick={checkoutHandler}
                                     style={{ fontSize: '1.7rem', fontWeight: 'bold', boxShadow: 'none' }}
                                 >
                                     Proceed To Checkout

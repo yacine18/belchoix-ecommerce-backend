@@ -10,12 +10,16 @@ const SigninScreen = (props) => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
+    const redirect = props.location.search
+    ? props.location.search.split('=')[1]
+    : '/';
+
     const userSignin = useSelector(state => state.userSignin)
     const { userInfo, loading, error } = userSignin
 
     useEffect(() => {
         if(userInfo) {
-            props.history.push('/')
+            props.history.push(redirect)
         }
     })
 
@@ -59,7 +63,7 @@ const SigninScreen = (props) => {
                 </div>
                 <button type="submit" className="btn btn-warning btn-block" style={{ fontSize: '1.8rem' }}>Login</button>
             </form>
-            <p className="mt-5 p-5 text-center">Haven't an Account? <Link to="/register">Sign Up</Link></p>
+            <p className="mt-5 p-5 text-center">Haven't an Account? <Link to={`/register?redirect=${redirect}`}>Sign Up</Link></p>
         </div>
     )
 }
