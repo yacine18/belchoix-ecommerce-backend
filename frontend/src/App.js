@@ -6,7 +6,9 @@ import PrivateRoute from './components/PrivateRoute'
 import CartScreen from './screens/CartScreen'
 import EditProfileScreen from './screens/EditProfileScreen'
 import HomeScreen from './screens/HomeScreen'
+import OrderScreen from './screens/OrderScreen'
 import PaymentMethodScreen from './screens/PaymentMethodScreen'
+import PlaceOrderScreen from './screens/PlaceOrderScreen'
 import ProductScreen from './screens/ProductScreen'
 import ProfileScreen from './screens/ProfileScreen'
 import RegisterScreen from './screens/RegisterScreen'
@@ -87,6 +89,8 @@ const App = () => {
           <Route path="/cart/:id?" component={CartScreen} />
           <Route path="/shipping" component={ShippingAddressScreen} />
           <Route path="/payment" component={PaymentMethodScreen} />
+          <Route path="/order/:id" component={OrderScreen} />
+          <Route path="/placeorder" component={PlaceOrderScreen} />
           <PrivateRoute path="/profile" component={ProfileScreen} exact/>
           <PrivateRoute path="/profile/:id/edit" component={EditProfileScreen} />
         </main>

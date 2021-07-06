@@ -6,6 +6,7 @@ import cors from 'cors';
 import database from './database.js';
 import userRouter from './routers/users.router.js';
 import productRouter from './routers/products.router.js';
+import orderRouter from './routers/orders.router.js'
 
 
 
@@ -34,6 +35,9 @@ app.use('/api/users', userRouter)
 
 //products router
 app.use('/api/products', productRouter)
+
+//orders routers
+app.use('/api/orders', orderRouter)
 
 
 

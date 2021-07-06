@@ -90,7 +90,7 @@ const CartScreen = props => {
                                     type="button"
                                     className="btn btn-block btn-warning"
                                     onClick={checkoutHandler}
-                                    style={{ fontSize: '1.7rem', fontWeight: 'bold', boxShadow: 'none' }}
+                                    style={{ fontSize: '1.7rem', boxShadow: 'none' }}
                                 >
                                     Proceed To Checkout
                                 </button>
