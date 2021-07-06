@@ -1,41 +1,64 @@
-import express from 'express';
-import { isAuth } from '../utils.js'
-import Order from '../models/Order.model.js'
+import express from "express";
+import { isAuth } from "../utils.js";
+import Order from "../models/Order.model.js";
 
 const orderRouter = express.Router();
 
-orderRouter.get('/mine', isAuth, async (req, res) => {
-    const orders = await Order.find({ user: req.user._id });
-    res.send(orders);
-})
+orderRouter.get("/mine", isAuth, async (req, res) => {
+  const orders = await Order.find({ user: req.user._id });
+  res.send(orders);
+});
 
-orderRouter.post('/', isAuth, async (req, res) => {
-    if (req.body.orderItems.length === 0) {
-        res.send(400).send({ message: 'Cart is Empty!' })
-    } else {
-        const order = new Order({
-            orderItems: req.body.orderItems,
-            shippingAddress: req.body.shippingAddress,
-            paymentMethod: req.body.paymentMethod,
-            itemsPrice: req.body.itemsPrice,
-            shippingPrice: req.body.shippingPrice,
-            taxPrice: req.body.taxPrice,
-            totalPrice: req.body.totalPrice,
-            user: req.user._id,
-        })
+orderRouter.post("/", isAuth, async (req, res) => {
+  if (req.body.orderItems.length === 0) {
+    res.send(400).send({ message: "Cart is Empty!" });
+  } else {
+    const order = new Order({
+      orderItems: req.body.orderItems,
+      shippingAddress: req.body.shippingAddress,
+      paymentMethod: req.body.paymentMethod,
+      itemsPrice: req.body.itemsPrice,
+      shippingPrice: req.body.shippingPrice,
+      taxPrice: req.body.taxPrice,
+      totalPrice: req.body.totalPrice,
+      user: req.user._id,
+    });
 
-        const createdOrder = await order.save();
-        res.status(201).send({ message: 'Order Created!', order: createdOrder })
+    const createdOrder = await order.save();
+    res.status(201).send({ message: "Order Created!", order: createdOrder });
+  }
+});
+
+orderRouter.get("/:id", async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  if (order) {
+    res.send(order);
+  } else {
+    res.status(404).send({ message: "Order Not Found!" });
+  }
+});
+
+orderRouter.put("/:id/pay", isAuth, async (req, res) => {
+    const order = await Order.findById(req.params.id).populate(
+        'user',
+        'email name'
+      );
+
+  if (order) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.paymentResult = {
+      id: req.body.id,
+      status: req.body.status,
+      update_time: req.body.update_time,
+      email_address: req.body.email_address,
     }
-})
 
-orderRouter.get('/:id', async(req,res) => {
-    const order = await Order.findById(req.params.id)
-    if(order) {
-        res.send(order)
-    } else {
-        res.status(404).send({ message: 'Order Not Found!'})
-    }
-})
+    const updatedOrder = await order.save();
+    res.send({ message: "Order Paid", order: updatedOrder });
+  } else {
+    res.status(404).send({ message: "Order Not Found!" });
+  }
+});
 
-export default orderRouter
+export default orderRouter;

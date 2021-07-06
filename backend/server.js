@@ -39,6 +39,11 @@ app.use('/api/products', productRouter)
 //orders routers
 app.use('/api/orders', orderRouter)
 
+//paypal clientID
+app.get('/api/config/paypal', (req,res) => {
+    res.send(process.env.PAYPAL_CLIENT_ID || 'sb')
+})
+
 
 
 const port = process.env.PORT || 5000

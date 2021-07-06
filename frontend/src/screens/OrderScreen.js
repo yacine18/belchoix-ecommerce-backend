@@ -1,23 +1,60 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
 import { Link } from "react-router-dom";
-import { detailsOrder } from "../actions/orderActions";
+import { detailsOrder, payOrder } from "../actions/orderActions";
+import { PayPalButton } from "react-paypal-button-v2";
+import axios from "axios";
+import { ORDER_PAY_RESET } from "../constants/orderConstants";
 
 const OrderScreen = (props) => {
+  const [sdkReady, setSdkReady] = useState(false);
+
   const orderId = props.match.params.id;
 
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
 
+  const orderPay = useSelector((state) => state.orderPay);
+  const {
+    loading: loadingPay,
+    error: errorPay,
+    success: successPay,
+  } = orderPay;
+
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!order || (order && order._id !== orderId)) {
+    const addPayPalScript = async () => {
+      const { data } = await axios.get("/api/config/paypal");
+      const script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = `https://www.paypal.com/sdk/js?client-id=${data}`;
+      script.async = true;
+      script.onload = () => {
+        setSdkReady(true);
+      };
+      document.body.appendChild(script);
+    };
+
+    if (!order || successPay || (order && order._id !== orderId)) {
+      dispatch({ type: ORDER_PAY_RESET });
       dispatch(detailsOrder(orderId));
+    } else {
+      if (!order.isPaid) {
+        if (!window.paypal) {
+          addPayPalScript();
+        } else {
+          setSdkReady(true);
+        }
+      }
     }
-  }, [dispatch, orderId, order]);
+  }, [dispatch, orderId, order, successPay]);
+
+  const successPaymentHandler = paymentResult => {
+    dispatch(payOrder(order, paymentResult));
+  };
 
   return loading ? (
     <LoadingBox></LoadingBox>
@@ -32,9 +69,13 @@ const OrderScreen = (props) => {
             Shipping Address
           </div>
           <div className="card-body">
-            <strong>Name: </strong> {order.shippingAddress.fullName}, <strong>Address: </strong>{" "}
-            {order.shippingAddress.address}, {order.shippingAddress.city},{" "}
-            {order.shippingAddress.postalCode}, {order.shippingAddress.country}
+            <strong>Name: </strong> {order.shippingAddress.fullName},{" "}
+            <strong>Address: </strong> {order.shippingAddress.address},{" "}
+            {order.shippingAddress.city}, {order.shippingAddress.postalCode},{" "}
+            {order.shippingAddress.country}
+          </div>
+          <div className="mb-1 p-4">
+            <span className="badge badge-danger">Not Delivered</span>
           </div>
         </div>
         <div className="card mt-5">
@@ -43,6 +84,13 @@ const OrderScreen = (props) => {
           </div>
           <div className="card-body">
             <strong>Method :</strong> {order.paymentMethod}
+          </div>
+          <div className="mb-1 p-4">
+            {order.isPaid ? (
+              <span className="badge badge-success">{order.paidAt.toString()}</span>
+            ) : (
+              <span className="badge badge-danger">Not Paid</span>
+            )}
           </div>
         </div>
         <div className="card mt-5">
@@ -102,6 +150,25 @@ const OrderScreen = (props) => {
             </div>
           </div>
         </div>
+        {!order.isPaid && (
+          <>
+            {!sdkReady ? (
+              <LoadingBox></LoadingBox>
+            ) : (
+              <>
+                {errorPay && (
+                  <MessageBox variant="danger">{errorPay}</MessageBox>
+                )}
+                {loadingPay && <LoadingBox></LoadingBox>}
+
+                <PayPalButton
+                  amount={order.totalPrice}
+                  onSuccess={successPaymentHandler}
+                ></PayPalButton>
+              </>
+            )}
+          </>
+        )}
 
         <div className="card-body"></div>
       </div>
