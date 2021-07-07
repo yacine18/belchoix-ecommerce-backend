@@ -87,7 +87,7 @@ const OrderScreen = (props) => {
           </div>
           <div className="mb-1 p-4">
             {order.isPaid ? (
-              <span className="badge badge-success">{order.paidAt.toString()}</span>
+              <span className="badge badge-success">{order.paidAt.substring(0, 10)}</span>
             ) : (
               <span className="badge badge-danger">Not Paid</span>
             )}

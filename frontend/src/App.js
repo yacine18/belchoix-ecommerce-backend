@@ -7,7 +7,7 @@ import CartScreen from './screens/CartScreen'
 import EditProfileScreen from './screens/EditProfileScreen'
 import HomeScreen from './screens/HomeScreen'
 import OrderScreen from './screens/OrderScreen'
-import OrdersMine from './screens/OrdersMine'
+import OrdersList from './screens/OrdersListScreen'
 import PaymentMethodScreen from './screens/PaymentMethodScreen'
 import PlaceOrderScreen from './screens/PlaceOrderScreen'
 import ProductScreen from './screens/ProductScreen'
@@ -31,7 +31,7 @@ const App = () => {
   }
   return (
     <BrowserRouter>
-      <div className="container-fluid mt-4">
+      <div className=" container-fluid mt-4">
         <header>
           <div>
             <nav className="navbar navbar-light">
@@ -67,7 +67,7 @@ const App = () => {
                       <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <Link to="/profile" className="dropdown-item" style={{ fontSize: '1.7rem' }}>Profile</Link>
 
-                        <Link className="dropdown-item" to="orders-history" style={{ fontSize: '1.7rem' }}>Orders</Link>
+                        <Link className="dropdown-item" to="/orders-history" style={{ fontSize: '1.7rem' }}>Orders</Link>
                         <Link className="dropdown-item" onClick={signoutHandler} to="#" style={{ fontSize: '1.7rem' }}>Sign out</Link>
                       </div>
                     </div>
@@ -92,7 +92,7 @@ const App = () => {
           <Route path="/payment" component={PaymentMethodScreen} />
           <Route path="/order/:id" component={OrderScreen} />
           <Route path="/placeorder" component={PlaceOrderScreen} />
-          <Route path="/orders-history" component={OrdersMine} />
+          <Route path="/orders-history" component={OrdersList} />
           <PrivateRoute path="/profile" component={ProfileScreen} exact/>
           <PrivateRoute path="/profile/:id/edit" component={EditProfileScreen} />
         </main>
