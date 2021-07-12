@@ -15,6 +15,8 @@ import ProfileScreen from './screens/ProfileScreen'
 import RegisterScreen from './screens/RegisterScreen'
 import ShippingAddressScreen from './screens/ShippingAddressScreen'
 import SigninScreen from './SigninScreen'
+import SearchBox from './components/SearchBox'
+import SearchScreen from './screens/SearchScreen'
 
 const App = () => {
 
@@ -39,6 +41,11 @@ const App = () => {
                 <Link to="/">
                   <img src="../images/logo.png" width="140" height="45" alt="belchoix" />
                 </Link>
+              </div>
+              <div>
+                <Route render={({history}) => (
+                  <SearchBox history={history}></SearchBox>
+                )} />
               </div>
               <div className="row">
                 <Link to="/cart" className="mr-5">
@@ -93,6 +100,7 @@ const App = () => {
           <Route path="/order/:id" component={OrderScreen} />
           <Route path="/placeorder" component={PlaceOrderScreen} />
           <Route path="/orders-history" component={OrdersList} />
+          <Route path='/search/name/:name?' component={SearchScreen} />
           <PrivateRoute path="/profile" component={ProfileScreen} exact/>
           <PrivateRoute path="/profile/:id/edit" component={EditProfileScreen} />
         </main>

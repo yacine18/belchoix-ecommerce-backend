@@ -9,6 +9,11 @@ orderRouter.get("/mine", isAuth, async (req, res) => {
   res.send(orders);
 });
 
+orderRouter.get("/", async (req, res) => {
+  const orders = await Order.find();
+  res.send(orders);
+});
+
 orderRouter.post("/", isAuth, async (req, res) => {
   if (req.body.orderItems.length === 0) {
     res.send(400).send({ message: "Cart is Empty!" });
@@ -39,10 +44,10 @@ orderRouter.get("/:id", async (req, res) => {
 });
 
 orderRouter.put("/:id/pay", isAuth, async (req, res) => {
-    const order = await Order.findById(req.params.id).populate(
-        'user',
-        'email name'
-      );
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "email name"
+  );
 
   if (order) {
     order.isPaid = true;
@@ -52,7 +57,7 @@ orderRouter.put("/:id/pay", isAuth, async (req, res) => {
       status: req.body.status,
       update_time: req.body.update_time,
       email_address: req.body.email_address,
-    }
+    };
 
     const updatedOrder = await order.save();
     res.send({ message: "Order Paid", order: updatedOrder });
