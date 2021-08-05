@@ -37,7 +37,7 @@ userRouter.post('/register', async (req, res) => {
             name: createdUser.name,
             mobile: createdUser.mobile,
             email: createdUser.email,
-            mobile: createdUser.mobile,
+            isAdmin: createdUser.isAdmin,
             token: generateToken(createdUser),
         })
     } catch (error) {

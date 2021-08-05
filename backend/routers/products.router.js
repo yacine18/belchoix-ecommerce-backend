@@ -41,8 +41,8 @@ productRouter.post('/', upload.single('image'), expressAsyncHandler(async (req, 
         category: req.body.category,
         price: req.body.price,
         countInStock: req.body.countInStock,
-        rating: 0,
-        numReviews: 0,
+        rating: req.body.rating,
+        numReviews: req.body.numReviews,
         description: req.body.description
     })
 
