@@ -1,5 +1,4 @@
 import express from 'express';
-import expressAsyncHandler from 'express-async-handler';
 import User from '../models/User.model.js'
 import bcrypt from 'bcrypt'
 import { generateToken, isAuth } from '../utils.js';
@@ -7,9 +6,13 @@ import { generateToken, isAuth } from '../utils.js';
 const userRouter = express.Router();
 
 //get all users
-userRouter.get('/', async (req, res) => {
-    const users = await User.find()
-    res.send(users)
+userRouter.get('/', isAuth, async(req,res) => {
+    const users = await User.find({})
+    if(!users){
+       return res.status(401).send({ message: 'User not Found!' }); 
+    }
+
+   res.status(201).send(users);
 })
 // signup new user
 userRouter.post('/register', async (req, res) => {
@@ -93,14 +96,15 @@ userRouter.get('/:id', isAuth, async (req, res) => {
     }
 })
 
-userRouter.put('/profile', async (req, res) => {
-    const user = await User.findById(req.user._id)
+userRouter.put('/profile/', isAuth, async (req, res) => {
+
+    const user = await User.findById(req.user.id)
     if (user) {
        user.name || req.body.name
        user.mobile || req.body.mobile
        user.email || req.body.email
        if(req.body.password){
-           user.password = bcrypt.hashSync(req.body.password, 8)
+           user.password = await bcrypt.hashSync(req.body.password, 8)
        }
 
        const updatedUser = await user.save()
@@ -113,5 +117,6 @@ userRouter.put('/profile', async (req, res) => {
        })
     }
 })
+
 
 export default userRouter;
